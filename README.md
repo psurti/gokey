@@ -1,6 +1,6 @@
 # gokey
 
-[![Build Status](https://travis-ci.org/cloudflare/gokey.svg?branch=master)](https://travis-ci.org/cloudflare/gokey)
+![build](https://github.com/cloudflare/gokey/actions/workflows/ci.yml/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cloudflare/gokey)](https://goreportcard.com/report/github.com/cloudflare/gokey)
 
 ## A simple vaultless password manager in Go
@@ -57,13 +57,16 @@ Supported password/key types:
 
 ### Installation
 
-**gokey** command-line utility can be downloaded and compiled using standard
-`go get` approach. Assuming you have [Go](https://golang.org/doc/install)
-installed and `$GOPATH` set, just do
+The **gokey** command-line utility can be downloaded and compiled using standard
+`go install` approach. Assuming you have [Go](https://golang.org/doc/install)
+installed, do
 ```
-go get github.com/cloudflare/gokey/cmd/gokey
+go install github.com/cloudflare/gokey/cmd/gokey@latest
 ```
-The `gokey` binary should appear in your `$GOPATH/bin` directory.
+The `gokey` binary should appear in your `$GOPATH/bin` directory. (Default
+`$HOME/go/bin`)
+
+Precompiled binaries are also available in the [Releases section](https://github.com/cloudflare/gokey/releases)
 
 ### Modes of operation
 
@@ -90,7 +93,7 @@ gokey -p super-secret-master-password -r example.com
 ```
 
 If you need a password for a different resource, (`example2.com`), you would
-change the real string
+change the realm string
 ```
 gokey -p super-secret-master-password -r example2.com
 ```
@@ -101,7 +104,7 @@ NOTE: In this mode generated passwords are as strong as your master password,
 so do have your master password strong enough. You can also derive private keys
 from your master password, but keep in mind, that these keys will have low
 entropy. That is why it is considered unsafe, so **gokey** does not allow it by
-default. If you're **_really_** know what you are doing, you can override this
+default. If you **_really_** know what you are doing, you can override this
 default by supplying `-u` flag.
 
 #### Using a seed file
@@ -129,5 +132,5 @@ gokey -p super-secret-master-password -s seedfile -r example.com -t ec256
 ```
 
 NOTE: you still need to remember your master password and keep a backup copy of
-your seed file. If you forget your master password or loose your seed file, you
-loose all derived passwords/keys as well.
+your seed file. If you forget your master password or lose your seed file, you
+will lose all derived passwords/keys as well.
