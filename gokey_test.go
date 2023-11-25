@@ -13,9 +13,7 @@ import (
 	"golang.org/x/crypto/ed25519"
 )
 
-var (
-	passSpec = &PasswordSpec{16, 3, 3, 2, 1, ""}
-)
+var passSpec = &PasswordSpec{16, 3, 3, 2, 1, ""}
 
 func TestGetPass(t *testing.T) {
 	pass1Seed1, err := GenerateEncryptedKeySeed("pass1")
@@ -121,11 +119,11 @@ func testGetKeyType(kt KeyType, t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if bytes.Compare(keyToBytes(key1Example1, t), keyToBytes(key1Example2, t)) == 0 {
+	if bytes.Equal(keyToBytes(key1Example1, t), keyToBytes(key1Example2, t)) {
 		t.Fatal("keys match for different realms")
 	}
 
-	if bytes.Compare(keyToBytes(key1Example1, t), keyToBytes(key2Example1, t)) == 0 {
+	if bytes.Equal(keyToBytes(key1Example1, t), keyToBytes(key2Example1, t)) {
 		t.Fatal("keys match for different master passwords")
 	}
 
@@ -139,11 +137,11 @@ func testGetKeyType(kt KeyType, t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if bytes.Compare(keyToBytes(key1Example1, t), keyToBytes(key1Example1Seed1, t)) == 0 {
+	if bytes.Equal(keyToBytes(key1Example1, t), keyToBytes(key1Example1Seed1, t)) {
 		t.Fatal("keys match for seeded and non-seeded master password")
 	}
 
-	if bytes.Compare(keyToBytes(key1Example1Seed1, t), keyToBytes(key1Example1Seed2, t)) == 0 {
+	if bytes.Equal(keyToBytes(key1Example1Seed1, t), keyToBytes(key1Example1Seed2, t)) {
 		t.Fatal("keys match for different seeds")
 	}
 
@@ -157,19 +155,25 @@ func testGetKeyType(kt KeyType, t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if (bytes.Compare(keyToBytes(key1Example1, t), keyToBytes(key1Example1Retry, t)) != 0) || (bytes.Compare(keyToBytes(key1Example1Seed1, t), keyToBytes(key1Example1Seed1Retry, t)) != 0) {
+	if !bytes.Equal(keyToBytes(key1Example1, t), keyToBytes(key1Example1Retry, t)) || !bytes.Equal(keyToBytes(key1Example1Seed1, t), keyToBytes(key1Example1Seed1Retry, t)) {
 		t.Fatal("keys with same invocation options do not match")
 	}
 }
 
 func TestGetKey(t *testing.T) {
-	testGetKeyType(EC256, t)
-	testGetKeyType(EC384, t)
-	testGetKeyType(EC521, t)
-	testGetKeyType(RSA2048, t)
-	testGetKeyType(RSA4096, t)
-	testGetKeyType(X25519, t)
-	testGetKeyType(ED25519, t)
+	for _, kt := range []KeyType{
+		EC256,
+		EC384,
+		EC521,
+		RSA2048,
+		RSA4096,
+		X25519,
+		ED25519,
+	} {
+		t.Run(kt.String(), func(t *testing.T) {
+			testGetKeyType(kt, t)
+		})
+	}
 }
 
 func TestGetKeyUnsafe(t *testing.T) {
